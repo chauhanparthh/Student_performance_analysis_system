@@ -15,9 +15,12 @@ def high_low_performers():
         ranked_list.append((average, student['Roll_No'], student['Name'], status))
         if average >= 85 and status == 'Pass':
             high_list.append(f"{student['Name']} ({average:.2f}%)")
-        if average < 50 or status == 'Fail':
+        elif average < 50 or status == 'Fail':
             low_list.append(f"{student['Name']} ({average:.2f}% - {status})")
-    ranked_list.sort(reverse=True)
+
+    # Sort passing students above failing students, then by highest average
+    ranked_list.sort(key=lambda item: (item[3] == 'Pass', item[0]), reverse=True)
+
     print('\n--- CLASS RANKING (TOP 5) ---')
     for rank, item in enumerate(ranked_list[:5], start=1):
         print(f'Rank {rank}: {item[2]} ({item[1]}) - {item[0]:.2f}% [{item[3]}]')
@@ -40,5 +43,8 @@ def subject_wise_analysis():
         marks = [(float(student[subject]), student['Name']) for student in students]
         subject_average = sum(mark for mark, _ in marks) / len(marks)
         highest, lowest = max(marks), min(marks)
-        print(f"{subject:<16} | {subject_average:<9.2f}% | {highest[0]:.0f} ({highest[1]}){'':<10} | {lowest[0]:.0f} ({lowest[1]})")
+        high_str = f"{highest[0]:.0f} ({highest[1]})"
+        low_str = f"{lowest[0]:.0f} ({lowest[1]})"
+        print(f"{subject:<16} | {subject_average:<9.2f}% | {high_str:<20} | {low_str:<20}")
     print('-' * 75)
+    
